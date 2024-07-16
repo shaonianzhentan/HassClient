@@ -148,6 +148,18 @@ namespace HassClient.WS
         }
 
         /// <summary>
+        /// 监听本地推送通知事件.
+        /// </summary>
+        /// <param name="value">callback.</param>
+        /// <param name="webhook_id">WebHookID.</param>
+        /// <param name="cancellationToken">A cancellation token used to propagate notification that this operation should be canceled.</param>
+        /// <returns>A task representing the asynchronous operation. The result of the task is a boolean indicating if the subscription was successfully done.</returns>
+        public Task<bool> AddEventHandlerPushNotificationAsync(EventHandler<MobileAppPushNotification> value, string webhook_id, CancellationToken cancellationToken = default)
+        {
+            return this.hassClientWebSocket.AddEventHandlerPushNotificationAsync(value, webhook_id, cancellationToken);
+        }
+
+        /// <summary>
         /// Gets a dump of the configuration in use by the Home Assistant instance.
         /// </summary>
         /// <param name="cancellationToken">

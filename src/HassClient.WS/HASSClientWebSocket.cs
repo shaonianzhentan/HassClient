@@ -801,5 +801,38 @@ namespace HassClient.WS
         {
             return this.RemoveEventHandlerSubscriptionAsync(value, Event.AnyEventFilter, cancellationToken);
         }
+
+        internal async Task<bool> AddEventHandlerPushNotificationAsync(EventHandler<MobileAppPushNotification> value, string webhook_id, CancellationToken cancellationToken)
+        {
+            string eventType = webhook_id;
+
+            if (string.IsNullOrWhiteSpace(eventType))
+            {
+                throw new ArgumentException($"'{nameof(eventType)}' cannot be null or whitespace", nameof(eventType));
+            }
+
+            this.CheckIsDiposed();
+
+            var subscribeMessage = new PushNotificationChannel()
+            {
+                WebhookID = webhook_id,
+                SupportConfirm = true,
+            };
+
+            var resultMessage = await this.SendCommandWithResultAsync(subscribeMessage, cancellationToken);
+
+            this.socketEventCallbacksBySubsciptionId.Add(resultMessage.Id, async (eventResultMessage) =>
+            {
+                var eventData = eventResultMessage.DeserializeEvent<MobileAppPushNotification>();
+                var msg = new PushNotificationConfirm()
+                {
+                    WebhookID = webhook_id,
+                    ConfirmID = eventData.HassConfirmID,
+                };
+                await this.SendCommandWithSuccessAsync(msg, CancellationToken.None);
+                value(eventResultMessage, eventData);
+            });
+            return resultMessage.Success;
+        }
     }
 }
