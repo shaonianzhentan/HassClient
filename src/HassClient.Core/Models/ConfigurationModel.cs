@@ -127,6 +127,12 @@ namespace HassClient.Models
         /// </summary>
         public string Currency { get; private set; }
 
+        /// <summary>
+        /// Gets the Language that Home Assistant is available on from the local network (e.g. "http://homeassistant.local:8123").
+        /// </summary>
+        [JsonProperty]
+        public string Language { get; private set; }
+
         /// <inheritdoc />
         public override string ToString() => this.LocationName;
     }
