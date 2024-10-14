@@ -1037,5 +1037,53 @@ namespace HassClient.WS
         {
             return this.hassClientWebSocket.SendCommandWithSuccessAsync(rawCommandMessage, cancellationToken);
         }
+
+        /// <summary>
+        /// 发送消息返回结果.
+        /// </summary>
+        /// <typeparam name="T">返回结果类型.</typeparam>
+        /// <param name="message">The raw command message to send.</param>
+        /// <param name="cancellationToken">A cancellation token used to propagate notification that this operation should be canceled.</param>
+        /// <returns>返回结果.</returns>
+        public async Task<T> SendRawCommandWithResultAsync<T>(RawCommandMessage message, CancellationToken cancellationToken = default)
+        {
+            var commandResult = await this.hassClientWebSocket.SendCommandWithResultAsync(message, cancellationToken);
+            return HassSerializer.DeserializeObject<T>(commandResult.Result);
+        }
+
+        /// <summary>
+        /// 创建长期令牌.
+        /// </summary>
+        /// <param name="client_name">客户端名称.</param>
+        /// <param name="lifespan">时长（天）.</param>
+        /// <returns>授权令牌.</returns>
+        public Task<string> AuthLongLivedAccessToken(string client_name, int lifespan = 3650)
+        {
+            return this.SendRawCommandWithResultAsync<string>(new RawCommandMessage("auth/long_lived_access_token", new
+            {
+                client_name,
+                lifespan,
+            }));
+        }
+
+        /// <summary>
+        /// 移除授权码.
+        /// </summary>
+        /// <param name="refresh_token_id">Refresh Token Id.</param>
+        /// <returns>执行结果.</returns>
+        public Task<bool> AuthDeleteRefreshToken(string refresh_token_id)
+        {
+            return this.SendRawCommandWithSuccessAsync(new RawCommandMessage("auth/delete_refresh_token", new { refresh_token_id }));
+        }
+
+        /// <summary>
+        /// 设置语音助手默认代理.
+        /// </summary>
+        /// <param name="pipeline_id">语音助手ID.</param>
+        /// <returns>执行结果.</returns>
+        public Task<bool> SetConversationAgent(string pipeline_id)
+        {
+            return this.SendRawCommandWithSuccessAsync(new RawCommandMessage("assist_pipeline/pipeline/set_preferred", new { pipeline_id }));
+        }
     }
 }
