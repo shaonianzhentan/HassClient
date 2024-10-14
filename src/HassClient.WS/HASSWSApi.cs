@@ -1067,6 +1067,15 @@ namespace HassClient.WS
         }
 
         /// <summary>
+        /// 获取所有授权信息.
+        /// </summary>
+        /// <returns>授权信息列表.</returns>
+        public Task<List<HassAuthClientInfo>> AuthRefreshTokens()
+        {
+            return this.SendRawCommandWithResultAsync<List<HassAuthClientInfo>>(new RawCommandMessage("auth/refresh_tokens"));
+        }
+
+        /// <summary>
         /// 移除授权码.
         /// </summary>
         /// <param name="refresh_token_id">Refresh Token Id.</param>
@@ -1079,11 +1088,22 @@ namespace HassClient.WS
         /// <summary>
         /// 设置语音助手默认代理.
         /// </summary>
-        /// <param name="pipeline_id">语音助手ID.</param>
+        /// <param name="pipeline_id">pipeline_id.</param>
         /// <returns>执行结果.</returns>
         public Task<bool> SetConversationAgent(string pipeline_id)
         {
             return this.SendRawCommandWithSuccessAsync(new RawCommandMessage("assist_pipeline/pipeline/set_preferred", new { pipeline_id }));
+        }
+
+        /// <summary>
+        /// 执行语音助手命令.
+        /// </summary>
+        /// <param name="text">文本.</param>
+        /// <param name="agent_id">代理.</param>
+        /// <returns>结果.</returns>
+        public Task<ConversationResult> ConversationProcess(string text, string agent_id)
+        {
+            return this.SendRawCommandWithResultAsync<ConversationResult>(new RawCommandMessage("conversation/process", new { text, agent_id }));
         }
     }
 }
