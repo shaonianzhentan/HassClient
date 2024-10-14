@@ -2,6 +2,7 @@
 using HassClient.Models;
 using HassClient.Serialization;
 using HassClient.WS.Messages;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -1104,6 +1105,22 @@ namespace HassClient.WS
         public Task<ConversationResult> ConversationProcess(string text, string agent_id)
         {
             return this.SendRawCommandWithResultAsync<ConversationResult>(new RawCommandMessage("conversation/process", new { text, agent_id }));
+        }
+
+        /// <summary>
+        /// 获取翻译内容.
+        /// </summary>
+        /// <param name="language">语音.</param>
+        /// <param name="category">分类.</param>
+        /// <returns>翻译数据.</returns>
+        public async Task<HassTranslations> GetTranslations(string language, string category)
+        {
+            var res = await this.SendRawCommandWithResultAsync(new RawCommandMessage("frontend/get_translations", new
+            {
+                language,
+                category,
+            }));
+            return JsonConvert.DeserializeObject<HassTranslations>(res.Result.ToString());
         }
     }
 }
