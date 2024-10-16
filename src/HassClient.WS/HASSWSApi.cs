@@ -1089,7 +1089,7 @@ namespace HassClient.WS
         /// <summary>
         /// 设置语音助手默认代理.
         /// </summary>
-        /// <param name="pipeline_id">pipeline_id.</param>
+        /// <param name="pipeline_id">PipelineInfo.ID.</param>
         /// <returns>执行结果.</returns>
         public Task<bool> SetConversationAgent(string pipeline_id)
         {
@@ -1100,7 +1100,7 @@ namespace HassClient.WS
         /// 执行语音助手命令.
         /// </summary>
         /// <param name="text">文本.</param>
-        /// <param name="agent_id">代理.</param>
+        /// <param name="agent_id">PipelineInfo.ConversationEngine.</param>
         /// <returns>结果.</returns>
         public Task<ConversationResult> ConversationProcess(string text, string agent_id)
         {
@@ -1110,8 +1110,8 @@ namespace HassClient.WS
         /// <summary>
         /// 获取翻译内容.
         /// </summary>
-        /// <param name="language">语音.</param>
-        /// <param name="category">分类.</param>
+        /// <param name="language">语言.</param>
+        /// <param name="category">entity_component | entity_component | state .</param>
         /// <returns>翻译数据.</returns>
         public async Task<HassTranslations> GetTranslations(string language, string category)
         {
